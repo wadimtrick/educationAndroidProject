@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Android Education App</string>
+    <string name="contact_details_title">Детали контакта</string>
+    <string name="contact_list_title">Список контактов</string>
 </resources>
