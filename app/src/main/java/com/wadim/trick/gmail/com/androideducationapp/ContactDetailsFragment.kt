@@ -3,17 +3,21 @@ package com.wadim.trick.gmail.com.androideducationapp
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 private const val CONTACT_DETAILS_ARGUMENT_KEY = "CONTACT_DETAILS_ARGUMENT_KEY"
 
-class ContactDetailsFragment : Fragment() {
-    private var contactID: Int = 0
+class ContactDetailsFragment : Fragment(R.layout.fragment_contact_details) {
+    private var scope: CoroutineScope? = null
 
     companion object {
         fun newInstance(contactID: Int) = ContactDetailsFragment().apply {
@@ -21,55 +25,58 @@ class ContactDetailsFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            contactID = it.getInt(CONTACT_DETAILS_ARGUMENT_KEY,0)
-        }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        scope = CoroutineScope(Dispatchers.IO)
     }
 
-    override fun onDestroy() {
-        contactID = 0
-        super.onDestroy()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_contact_details, container, false)
+    override fun onDetach() {
+        scope?.cancel()
+        super.onDetach()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setActivityToolbarTitle()
-        fillDataFroContact(contactID, view)
+
+        scope?.launch {
+            val contactServiceClient = requireActivity() as? ContactServiceClient ?: return@launch
+            while (!contactServiceClient.isServiceBinded()) {
+            }
+
+            val contactID = arguments?.getInt(CONTACT_DETAILS_ARGUMENT_KEY) ?: return@launch
+            val contactFullInfo = contactServiceClient.getContactFullInfoWithService(contactID)
+            requireActivity().runOnUiThread { fillDataForContact(contactFullInfo) }
+        }
     }
 
     private fun setActivityToolbarTitle() {
         requireActivity().title = getString(R.string.contact_details_title)
     }
 
-    fun fillDataFroContact(contactID: Int, view: View) {
-        val contactPhoto: ImageView? = view.findViewById(R.id.contactDetailsPhotoImage)
-        contactPhoto?.setImageResource(R.drawable.contact_photo)
+    private fun fillDataForContact(contact: ContactFullInfo) {
+        val progressBar: ProgressBar? = view?.findViewById(R.id.contactDetailsProgressBar)
+        progressBar?.isVisible = false
 
-        val contactName: TextView? = view.findViewById(R.id.contactDetailsNameTV)
-        contactName?.text = "Хрюня"
+        val contactPhoto: ImageView? = view?.findViewById(R.id.contactDetailsPhotoImage)
+        contactPhoto?.setImageResource(contact.imageId)
 
-        val contactPhone1: TextView? = view.findViewById(R.id.contactDetailsPhone1TV)
-        contactPhone1?.text = "8-800-555-35-35"
+        val contactName: TextView? = view?.findViewById(R.id.contactDetailsNameTV)
+        contactName?.text = contact?.name
 
-        val contactPhone2: TextView? = view.findViewById(R.id.contactDetailsPhone2TV)
-        contactPhone2?.text = "8-900-666-74-74"
+        val contactPhone1: TextView? = view?.findViewById(R.id.contactDetailsPhone1TV)
+        contactPhone1?.text = contact?.phone
 
-        val contactEmail1: TextView? = view.findViewById(R.id.contactDetailsEmail1TV)
-        contactEmail1?.text = "hryunya@gmail.com"
+        val contactPhone2: TextView? = view?.findViewById(R.id.contactDetailsPhone2TV)
+        contactPhone2?.text = contact?.phoneSecondary
 
-        val contactEmail2: TextView? = view.findViewById(R.id.contactDetailsEmail2TV)
-        contactEmail2?.text = "-"
+        val contactEmail1: TextView? = view?.findViewById(R.id.contactDetailsEmail1TV)
+        contactEmail1?.text = contact?.email
 
-        val description: TextView? = view.findViewById(R.id.contactDetailsDescriptionTV)
-        description?.text = "Шерстяная и мягкая. Не любит звонки после 11.00"
+        val contactEmail2: TextView? = view?.findViewById(R.id.contactDetailsEmail2TV)
+        contactEmail2?.text = contact?.emailSecondary
+
+        val description: TextView? = view?.findViewById(R.id.contactDetailsDescriptionTV)
+        description?.text = contact?.description
     }
 }
