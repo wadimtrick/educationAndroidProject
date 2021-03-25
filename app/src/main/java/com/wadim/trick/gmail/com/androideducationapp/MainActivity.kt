@@ -1,12 +1,13 @@
 package com.wadim.trick.gmail.com.androideducationapp
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.*
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 
 class MainActivity : AppCompatActivity(),
     ClickableContactListElement, ContactServiceClient {
@@ -25,12 +26,18 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (savedInstanceState == null)
-            showContactList()
         bindContactService()
+        val contactID = intent.getIntExtra(CONTACT_ID_KEY, 0)
+        if (savedInstanceState == null) {
+            showContactList()
+            if (contactID > 0)
+                showContactDetailsFragment(contactID)
+        }
+        createBirthdayNotificationChannel()
     }
 
     override fun onDestroy() {
@@ -74,4 +81,19 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun isServiceBinded() = bound
+
+    private fun createBirthdayNotificationChannel() {
+        val channelID = NOTIFICATION_CHANNEL_ID
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelID,
+                NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 }

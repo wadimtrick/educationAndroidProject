@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import kotlinx.coroutines.*
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.coroutines.coroutineContext
 
 private const val TAG = "ContactService"
@@ -20,18 +22,20 @@ class ContactService : Service() {
         fun getService(): ContactService = this@ContactService
     }
 
-    suspend fun getContactListShortInfo(): ArrayList<ContactShortInfo> = withContext(
+    suspend fun getContactListShortInfo(): List<ContactShortInfo> = withContext(
         coroutineContext) {
             delay(1500)
-            return@withContext arrayListOf(ContactShortInfo(1, "Хрюня", "8-800-555-35-35", R.drawable.contact_photo))
+            return@withContext listOf<ContactShortInfo>(ContactShortInfo(1, "Хрюня", "8-800-555-35-35", R.drawable.contact_photo))
     }
 
-    suspend fun getContactFullInfo(contactID: Int): ContactFullInfo = withContext(coroutineContext) {
+    suspend fun getContactFullInfo(contactID: Int): ContactFullInfo =
+        withContext(coroutineContext) {
             delay(1500)
+            val birthday = GregorianCalendar(2000, 3, 29)
             return@withContext ContactFullInfo(
-                1, "Хрюня", "8-800-555-35-35", "8-900-666-25-25",
+                1, "Хрюня", "8-800-555-35-35", birthday, "8-900-666-25-25",
                 "hrunya@gmail.com", "-", "Описание", R.drawable.contact_photo
             )
-    }
+        }
 }
 
