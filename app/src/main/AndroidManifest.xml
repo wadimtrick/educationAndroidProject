@@ -17,6 +17,12 @@
             </intent-filter>
         </activity>
         <service android:name=".ContactService"/>
+        <receiver
+            android:name=".ContactBirthdayNotifyReceiver">
+            <intent-filter>
+                <action android:name="contact.action.birthdayNotify"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
