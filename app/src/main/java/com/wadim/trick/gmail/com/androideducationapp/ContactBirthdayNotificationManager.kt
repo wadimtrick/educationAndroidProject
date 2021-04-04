@@ -7,7 +7,6 @@ import android.content.Intent
 import java.util.*
 
 const val CONTACT_ID_KEY = "CONTACT_ID"
-const val CONTACT_PHOTO_ID_KEY = "CONTACT_PHOTO_ID"
 const val CONTACT_BIRTHDAY_KEY = "CONTACT_BIRTHDAY"
 const val CONTACT_NAME_KEY = "CONTACT_NAME_KEY"
 const val NOTIFICATION_CHANNEL_ID = "contactBirthdayChannel"
@@ -19,6 +18,9 @@ class ContactBirthdayNotificationManager() {
         isNotificationEnabled: Boolean,
         contact: ContactBirthdayInfo
     ) {
+        if (contact.birthday == null)
+            return
+
         val alarmManager =
             context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val notificationPendingIntent = getBirthdayNotificationPendingIntent(context, contact)
@@ -38,7 +40,7 @@ class ContactBirthdayNotificationManager() {
     fun isBirthdayNotificationPendingIntentExist(context: Context, contact: ContactBirthdayInfo): Boolean {
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            contact.id,
+            contact.id.hashCode(),
             getBirthdayNotificationIntent(context, contact),
             PendingIntent.FLAG_NO_CREATE
         )
@@ -48,7 +50,7 @@ class ContactBirthdayNotificationManager() {
     private fun getBirthdayNotificationPendingIntent(context: Context, contact: ContactBirthdayInfo): PendingIntent {
         return PendingIntent.getBroadcast(
             context,
-            contact.id,
+            contact.id.hashCode(),
             getBirthdayNotificationIntent(context, contact),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -58,8 +60,7 @@ class ContactBirthdayNotificationManager() {
         with(contact) {
             return Intent(context, ContactBirthdayNotifyReceiver::class.java)
                 .putExtra(CONTACT_ID_KEY, id)
-                .putExtra(CONTACT_PHOTO_ID_KEY, imageId)
-                .putExtra(CONTACT_BIRTHDAY_KEY, birthday.timeInMillis)
+                .putExtra(CONTACT_BIRTHDAY_KEY, birthday?.timeInMillis)
                 .putExtra(CONTACT_NAME_KEY, name)
         }
     }
