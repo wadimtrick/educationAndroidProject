@@ -2,6 +2,12 @@
     <string name="app_name">Android Education App</string>
     <string name="contact_details_title">Детали контакта</string>
     <string name="contact_list_title">Список контактов</string>
+    <string name="permission_warning_title">Необходимо разрешение</string>
     <string name="contact_birthday_intent_text_value">Сегодня день рождения у %s</string>
     <string name="contact_birthday_notification_title">День рождения</string>
+    <string name="permission_warning_text">Для работы приложения необходимо предоставить доступ на чтение листа контактов.</string>
+    <string name="permission_request_button_text">Предоставить</string>
+    <string name="null_birthday_alarm_warning">Не указан день рождения</string>
+    <string name="main_data_missing">Не указано</string>
+    <string name="date_missing">Дата не указана</string>
 </resources>

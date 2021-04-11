@@ -14,17 +14,16 @@ class ContactBirthdayNotifyReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context == null || intent == null)
             return
-        val contactID = intent?.getIntExtra(CONTACT_ID_KEY, 0)
-        val contactPhotoID = intent?.getIntExtra(CONTACT_PHOTO_ID_KEY, 0)
+        val contactID = intent?.getStringExtra(CONTACT_ID_KEY) ?: ""
         val contactBirthday = Calendar.getInstance()
         contactBirthday.timeInMillis = intent?.getLongExtra(CONTACT_BIRTHDAY_KEY, 0)
         val contactName = intent?.getStringExtra(CONTACT_NAME_KEY) ?: "Ошибка"
         if (contactName == "Ошибка")
             return
 
-        createNotification(context, contactID, contactPhotoID, contactName)
+        createNotification(context, contactID, contactName)
         val contactBirthdayInfo =
-            ContactBirthdayInfo(contactID, contactName, contactBirthday, contactPhotoID)
+            ContactBirthdayInfo(contactID, contactName, contactBirthday)
         val contactBirthdayNotification = ContactBirthdayNotificationManager()
         contactBirthdayNotification.switchAlarmBithdayNotification(
             context,
@@ -35,13 +34,12 @@ class ContactBirthdayNotifyReceiver : BroadcastReceiver() {
 
     private fun createNotification(
         context: Context,
-        contactID: Int,
-        contactPhotoID: Int,
+        contactID: String,
         contactName: String
     ) {
         val channelID = NOTIFICATION_CHANNEL_ID
         val notificationBuilder = NotificationCompat.Builder(context, channelID)
-            .setSmallIcon(contactPhotoID)
+            .setSmallIcon(R.drawable.ic_birthday_cake)
             .setContentTitle(context.resources.getString(R.string.contact_birthday_notification_title))
             .setContentText(getBirthdayNotificationText(context, contactName))
             .setAutoCancel(true)
@@ -58,14 +56,14 @@ class ContactBirthdayNotifyReceiver : BroadcastReceiver() {
         )
     }
 
-    private fun getNotificationPendingIntent(context: Context, contactID: Int): PendingIntent {
+    private fun getNotificationPendingIntent(context: Context, contactID: String): PendingIntent {
         val intent = Intent(context, MainActivity::class.java)
             .putExtra(CONTACT_ID_KEY, contactID)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         return PendingIntent.getActivity(
             context,
-            contactID,
+            contactID.hashCode(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )

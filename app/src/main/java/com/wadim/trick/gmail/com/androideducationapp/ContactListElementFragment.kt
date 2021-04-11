@@ -1,8 +1,8 @@
 package com.wadim.trick.gmail.com.androideducationapp
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ImageView
@@ -10,8 +10,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import kotlinx.coroutines.*
-
-const val CONTACT_SHORT_INFO_KEY = "CONTACT_SHORT_INFO_KEY"
 
 class ContactListElementFragment : Fragment(R.layout.fragment_contact_list_element) {
     private var scope: CoroutineScope? = null
@@ -54,7 +52,10 @@ class ContactListElementFragment : Fragment(R.layout.fragment_contact_list_eleme
         progressBar?.isVisible = false
 
         val contactPhotoView: ImageView? = view?.findViewById(R.id.contactPhotoImage)
-        contactPhotoView?.setImageResource(contact.imageId)
+        if (contact.imageURI != Uri.EMPTY)
+            contactPhotoView?.setImageURI(contact.imageURI)
+        else
+            contactPhotoView?.setImageResource(R.drawable.ic_generic_avatar)
 
         val contactName: TextView? = view?.findViewById(R.id.contactNameTV)
         contactName?.text = contact.name
@@ -63,7 +64,7 @@ class ContactListElementFragment : Fragment(R.layout.fragment_contact_list_eleme
         contactPhone?.text = contact.phone
     }
 
-    private fun setOnClickShowDetails(contactId: Int) {
+    private fun setOnClickShowDetails(contactId: String) {
         view?.setOnClickListener {
             (requireActivity() as? ClickableContactListElement)?.showContactDetails(contactId)
         }

@@ -1,13 +1,10 @@
 package com.wadim.trick.gmail.com.androideducationapp
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Switch
-import android.widget.TextView
-
+import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -24,7 +21,7 @@ class ContactDetailsFragment : Fragment(R.layout.fragment_contact_details) {
     private var scope: CoroutineScope? = null
 
     companion object {
-        fun newInstance(contactID: Int) = ContactDetailsFragment().apply {
+        fun newInstance(contactID: String) = ContactDetailsFragment().apply {
             arguments = bundleOf(CONTACT_DETAILS_ARGUMENT_KEY to contactID)
         }
     }
@@ -48,7 +45,7 @@ class ContactDetailsFragment : Fragment(R.layout.fragment_contact_details) {
             while (!contactServiceClient.isServiceBinded()) {
             }
 
-            val contactID = arguments?.getInt(CONTACT_DETAILS_ARGUMENT_KEY) ?: return@launch
+            val contactID = arguments?.getString(CONTACT_DETAILS_ARGUMENT_KEY) ?: return@launch
             val contactFullInfo = contactServiceClient.getContactFullInfoWithService(contactID)
             requireActivity().runOnUiThread {
                 fillDataForContact(contactFullInfo)
@@ -63,15 +60,17 @@ class ContactDetailsFragment : Fragment(R.layout.fragment_contact_details) {
     private fun setNotifySwitchListener(contact: ContactFullInfo) {
         val contactBirthdayInfo = ContactBirthdayInfo(contact)
         val switch: Switch? = view?.findViewById(R.id.contactDetailsBirthdayNotifySwitch)
+        if (contact.birthday == null)
+            return
         switch?.isVisible = true
         with(ContactBirthdayNotificationManager()) {
             if (isBirthdayNotificationPendingIntentExist(requireContext(), contactBirthdayInfo))
                 switch?.isChecked = true
             switch?.setOnCheckedChangeListener { buttonView, isChecked ->
                 switchAlarmBithdayNotification(
-                    requireContext(),
-                    isChecked,
-                    contactBirthdayInfo
+                        requireContext(),
+                        isChecked,
+                        contactBirthdayInfo
                 )
             }
         }
@@ -84,10 +83,14 @@ class ContactDetailsFragment : Fragment(R.layout.fragment_contact_details) {
         progressBar?.isVisible = false
 
         val contactPhoto: ImageView? = view?.findViewById(R.id.contactDetailsPhotoImage)
-        contactPhoto?.setImageResource(contact.imageId)
+        if (contact.imageURI != Uri.EMPTY)
+            contactPhoto?.setImageURI(contact.imageURI)
+        else
+            contactPhoto?.setImageResource(R.drawable.ic_generic_avatar)
 
         val contactBirthday: TextView? = view?.findViewById(R.id.contactDetailsBirthdayTV)
-        contactBirthday?.text = SimpleDateFormat("d MMMM", Locale.getDefault()).format(contact.birthday.time)
+        contactBirthday?.text = if (contact.birthday != null)
+            SimpleDateFormat("d MMMM", Locale.getDefault()).format(contact.birthday.time) else getString(R.string.date_missing)
 
         val contactName: TextView? = view?.findViewById(R.id.contactDetailsNameTV)
         contactName?.text = contact?.name
