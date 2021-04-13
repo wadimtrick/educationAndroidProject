@@ -1,90 +1,94 @@
-package com.wadim.trick.gmail.com.androideducationapp
+package com.wadim.trick.gmail.com.androideducationapp.models
 
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract
+import com.wadim.trick.gmail.com.androideducationapp.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.coroutineContext
 
 class ContactsSource(private val context: Context) {
-    fun getContactList(): List<ContactShortInfo> {
+        suspend fun getContactList(): List<ContactShortInfo> = withContext(coroutineContext) {
         val contactList = mutableListOf<ContactShortInfo>()
         val cursor = getContacts()
 
         cursor.use { cursor ->
             if (cursor != null) {
                 val contactIdColumnIndex =
-                    cursor.getColumnIndex(ContactsContract.Contacts.NAME_RAW_CONTACT_ID)
+                        cursor.getColumnIndex(ContactsContract.Contacts.NAME_RAW_CONTACT_ID)
                 val nameColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
                 val photoUriColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)
                 while (cursor.moveToNext()) {
                     val contactRawID =
-                        cursor.getString(contactIdColumnIndex)
+                            cursor.getString(contactIdColumnIndex)
                     val contactName =
-                        cursor.getString(nameColumnIndex)
+                            cursor.getString(nameColumnIndex)
                     val contactPhones = getContactAdditionalDataByRawId(
-                        contactRawID,
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                            contactRawID,
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
                     )
                     val contactPhotoString = cursor.getString(photoUriColumnIndex) ?: ""
                     contactList.add(
-                        ContactShortInfo(
-                            contactRawID,
-                            contactName,
-                            contactPhones[0],
-                            Uri.parse(contactPhotoString)
-                        )
+                            ContactShortInfo(
+                                    contactRawID,
+                                    contactName,
+                                    contactPhones[0],
+                                    Uri.parse(contactPhotoString)
+                            )
                     )
                 }
             }
         }
 
-        return contactList
+        return@withContext contactList
     }
 
     fun getContactDetails(contactID: String): ContactFullInfo {
         val contactBirthday = getContactBirthdayCalendarByRawId(
-            contactID
+                contactID
         )
         val contactPhones = getContactAdditionalDataByRawId(
-            contactID,
-            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                contactID,
+                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
         )
         val contactEmails = getContactAdditionalDataByRawId(
-            contactID,
-            ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE
+                contactID,
+                ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE
         )
         val contactDescription = getContactAdditionalDataByRawId(
-            contactID,
-            ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE
+                contactID,
+                ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE
         )
         val contactPhoto = getContactMainDataByRawId(
-            contactID,
-            ContactsContract.Data.PHOTO_URI
+                contactID,
+                ContactsContract.Data.PHOTO_URI
         )
         val contactName =
-            getContactMainDataByRawId(
-                contactID,
-                ContactsContract.Data.DISPLAY_NAME
-            )
+                getContactMainDataByRawId(
+                        contactID,
+                        ContactsContract.Data.DISPLAY_NAME
+                )
         return ContactFullInfo(contactID, contactName, contactPhones[0], contactBirthday, contactPhones[1],
-            contactEmails[0], contactEmails[1], contactDescription[0], Uri.parse(contactPhoto))
+                contactEmails[0], contactEmails[1], contactDescription[0], Uri.parse(contactPhoto))
     }
 
     private fun getContacts(): Cursor? {
         return try {
             context.contentResolver.query(
-                ContactsContract.Contacts.CONTENT_URI,
-                arrayOf(
-                    ContactsContract.Contacts.NAME_RAW_CONTACT_ID,
-                    ContactsContract.Contacts.DISPLAY_NAME,
-                    ContactsContract.Contacts.PHOTO_URI
-                ),
-                null,
-                null,
-                null
+                    ContactsContract.Contacts.CONTENT_URI,
+                    arrayOf(
+                            ContactsContract.Contacts.NAME_RAW_CONTACT_ID,
+                            ContactsContract.Contacts.DISPLAY_NAME,
+                            ContactsContract.Contacts.PHOTO_URI
+                    ),
+                    null,
+                    null,
+                    null
             )
         } catch (e: Exception) {
             null
@@ -94,11 +98,11 @@ class ContactsSource(private val context: Context) {
     private fun getContactData(contactID: String, mime: String): Cursor? {
         return try {
             context.contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                arrayOf(ContactsContract.Data.DATA1),
-                "${ContactsContract.Data.RAW_CONTACT_ID} = ? AND ${ContactsContract.Data.MIMETYPE} = ?",
-                arrayOf(contactID, mime),
-                null
+                    ContactsContract.Data.CONTENT_URI,
+                    arrayOf(ContactsContract.Data.DATA1),
+                    "${ContactsContract.Data.RAW_CONTACT_ID} = ? AND ${ContactsContract.Data.MIMETYPE} = ?",
+                    arrayOf(contactID, mime),
+                    null
             )
         } catch (e: Exception) {
             null
@@ -106,8 +110,8 @@ class ContactsSource(private val context: Context) {
     }
 
     private fun getContactAdditionalDataByRawId(
-        contactID: String,
-        mime: String
+            contactID: String,
+            mime: String
     ): List<String> {
         var values = mutableListOf<String>()
         val cursor = getContactData(contactID, mime)
@@ -121,7 +125,7 @@ class ContactsSource(private val context: Context) {
                 }
             }
         }
-        while(values.size < 2)
+        while (values.size < 2)
             values.add("")
         return values
     }
@@ -131,11 +135,11 @@ class ContactsSource(private val context: Context) {
         var cursor: Cursor?
         try {
             cursor = context.contentResolver.query(
-                ContactsContract.Contacts.CONTENT_URI,
-                null,
-                "${ContactsContract.Data.NAME_RAW_CONTACT_ID} = $contactID",
-                null,
-                null
+                    ContactsContract.Contacts.CONTENT_URI,
+                    null,
+                    "${ContactsContract.Data.NAME_RAW_CONTACT_ID} = $contactID",
+                    null,
+                    null
             )
         } catch (e: Exception) {
             return context.getString(R.string.main_data_missing)

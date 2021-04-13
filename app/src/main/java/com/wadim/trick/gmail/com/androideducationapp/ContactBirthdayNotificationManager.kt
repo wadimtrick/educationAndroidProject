@@ -4,6 +4,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.wadim.trick.gmail.com.androideducationapp.models.ContactBirthdayInfo
+import com.wadim.trick.gmail.com.androideducationapp.receivers.ContactBirthdayNotifyReceiver
 import java.util.*
 
 const val CONTACT_ID_KEY = "CONTACT_ID"

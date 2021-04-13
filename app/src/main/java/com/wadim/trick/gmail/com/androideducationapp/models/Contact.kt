@@ -1,4 +1,4 @@
-package com.wadim.trick.gmail.com.androideducationapp
+package com.wadim.trick.gmail.com.androideducationapp.models
 
 import android.net.Uri
 import java.util.*
