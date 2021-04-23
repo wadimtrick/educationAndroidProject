@@ -1,6 +1,8 @@
 package com.wadim.trick.gmail.com.androideducationapp.fragments
 
 import android.os.Build
+import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import com.wadim.trick.gmail.com.androideducationapp.R
@@ -23,12 +25,18 @@ class PermissionWarningFragment : MvpAppCompatFragment(R.layout.fragment_permiss
         fun newInstance() = PermissionWarningFragment()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setButtonOnClick()
+    }
+
     override fun setToolbarTitle() {
         requireActivity().title = getString(R.string.permission_warning_title)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun setButtonOnClick() {
+    private fun setButtonOnClick() {
         val permissionButton: Button? = view?.findViewById(R.id.permissionButton)
         permissionButton?.setOnClickListener {
             permissionWarningPresenter.buttonRequestPermissionClick()

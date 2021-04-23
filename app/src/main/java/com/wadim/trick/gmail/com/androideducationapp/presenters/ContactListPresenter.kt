@@ -3,7 +3,10 @@ package com.wadim.trick.gmail.com.androideducationapp.presenters
 import android.content.Context
 import com.wadim.trick.gmail.com.androideducationapp.models.ContactsSource
 import com.wadim.trick.gmail.com.androideducationapp.views.ContactListView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.MvpPresenter
 
@@ -19,9 +22,9 @@ class ContactListPresenter(private val context: Context) : MvpPresenter<ContactL
 
     override fun attachView(view: ContactListView?) {
         super.attachView(view)
+        scope = CoroutineScope(Dispatchers.Main)
         if (isFirstAttach) {
-            scope = CoroutineScope(Dispatchers.Main)
-            getContactList()
+            getContactList("")
             isFirstAttach = false
         }
 
@@ -32,9 +35,9 @@ class ContactListPresenter(private val context: Context) : MvpPresenter<ContactL
         super.detachView(view)
     }
 
-    private fun getContactList() {
+    fun getContactList(contactName: String) {
         scope?.launch {
-            val contactList = ContactsSource(context).getContactList()
+            val contactList = ContactsSource(context).getContactList(contactName)
             viewState.showContactList(contactList)
         }
     }

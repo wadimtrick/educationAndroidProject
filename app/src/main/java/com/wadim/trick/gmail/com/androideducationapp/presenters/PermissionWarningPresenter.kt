@@ -11,7 +11,6 @@ class PermissionWarningPresenter() : MvpPresenter<PermissionWarningView>() {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setToolbarTitle()
-        viewState.setButtonOnClick()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

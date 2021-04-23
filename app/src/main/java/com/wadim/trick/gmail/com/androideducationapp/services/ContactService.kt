@@ -26,7 +26,7 @@ class ContactService : Service() {
     suspend fun getContactListShortInfo(): List<ContactShortInfo> = withContext(
             coroutineContext
     ) {
-        return@withContext ContactsSource(applicationContext).getContactList()
+        return@withContext ContactsSource(applicationContext).getContactList("")
     }
 
     suspend fun getContactFullInfo(contactID: String): ContactFullInfo =

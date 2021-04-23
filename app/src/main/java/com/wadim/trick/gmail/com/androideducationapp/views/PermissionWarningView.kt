@@ -9,6 +9,5 @@ import moxy.viewstate.strategy.StateStrategyType
 @StateStrategyType(OneExecutionStateStrategy::class)
 interface PermissionWarningView: MvpView {
     fun setToolbarTitle()
-    fun setButtonOnClick()
     fun onButtonClick()
 }

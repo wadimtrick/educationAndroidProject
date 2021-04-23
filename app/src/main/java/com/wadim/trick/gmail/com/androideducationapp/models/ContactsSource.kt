@@ -5,17 +5,16 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract
 import com.wadim.trick.gmail.com.androideducationapp.R
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.coroutineContext
 
 class ContactsSource(private val context: Context) {
-        suspend fun getContactList(): List<ContactShortInfo> = withContext(coroutineContext) {
+    suspend fun getContactList(contactName: String): List<ContactShortInfo> = withContext(Dispatchers.IO) {
         val contactList = mutableListOf<ContactShortInfo>()
-        val cursor = getContacts()
+        val cursor = getContacts(contactName)
 
         cursor.use { cursor ->
             if (cursor != null) {
@@ -44,11 +43,10 @@ class ContactsSource(private val context: Context) {
                 }
             }
         }
-
         return@withContext contactList
     }
 
-    fun getContactDetails(contactID: String): ContactFullInfo {
+    suspend fun getContactDetails(contactID: String): ContactFullInfo = withContext(Dispatchers.IO) {
         val contactBirthday = getContactBirthdayCalendarByRawId(
                 contactID
         )
@@ -73,11 +71,11 @@ class ContactsSource(private val context: Context) {
                         contactID,
                         ContactsContract.Data.DISPLAY_NAME
                 )
-        return ContactFullInfo(contactID, contactName, contactPhones[0], contactBirthday, contactPhones[1],
+        return@withContext ContactFullInfo(contactID, contactName, contactPhones[0], contactBirthday, contactPhones[1],
                 contactEmails[0], contactEmails[1], contactDescription[0], Uri.parse(contactPhoto))
     }
 
-    private fun getContacts(): Cursor? {
+    private fun getContacts(contactName: String): Cursor? {
         return try {
             context.contentResolver.query(
                     ContactsContract.Contacts.CONTENT_URI,
@@ -86,9 +84,9 @@ class ContactsSource(private val context: Context) {
                             ContactsContract.Contacts.DISPLAY_NAME,
                             ContactsContract.Contacts.PHOTO_URI
                     ),
-                    null,
-                    null,
-                    null
+                    ContactsContract.Contacts.DISPLAY_NAME + " LIKE ?",
+                    arrayOf("$contactName%"),
+                    ContactsContract.Contacts.DISPLAY_NAME + " ASC"
             )
         } catch (e: Exception) {
             null
