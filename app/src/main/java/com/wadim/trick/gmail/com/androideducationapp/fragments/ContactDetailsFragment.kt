@@ -33,20 +33,45 @@ class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_de
     }
 
     override fun showContactDetails(contact: ContactFullInfo) {
-        val switch: Switch? = view?.findViewById(R.id.contactDetailsBirthdayNotifySwitch)
-        if (switch != null)
-            contactDetailsPresenter.setNotifySwitchListener(contact, switch)
-
-        val progressBar: ProgressBar? = view?.findViewById(R.id.contactDetailsProgressBar)
-        progressBar?.isVisible = false
-
+        setNotifySwitchClickListener(contact)
         setContactPhoto(contact.imageURI)
         setContactBirthdayInfo(contact.birthday)
         setContactTextInfo(contact)
     }
 
+    private fun setNotifySwitchClickListener(contact: ContactFullInfo) {
+        if (contact.birthday == null)
+            return
+        val switch: Switch? = view?.findViewById(R.id.contactDetailsBirthdayNotifySwitch)
+        switch?.isVisible = true
+        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
+            onSwitchChanged(isChecked)
+        }
+    }
+
     override fun setToolbarTitle() {
         requireActivity().title = getString(R.string.contact_details_title)
+    }
+
+    override fun setProgressBarVisible(isVisible: Boolean) {
+        view?.findViewById<ProgressBar>(R.id.contactDetailsProgressBar)?.isVisible = isVisible
+    }
+
+    override fun setSwitchChecked(isChecked: Boolean) {
+        val switch: Switch? = view?.findViewById(R.id.contactDetailsBirthdayNotifySwitch)
+        switch?.isChecked = isChecked
+    }
+
+    private fun onSwitchChanged(isChecked: Boolean) {
+        contactDetailsPresenter.onSwitchChanged(isChecked)
+    }
+
+    override fun showToast(text: String) {
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun setContactPhoto(photoUri: Uri) {
