@@ -6,6 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.wadim.trick.gmail.com.androideducationapp.models.ContactFullInfo
 import com.wadim.trick.gmail.com.androideducationapp.R
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.ClickableContactListElement
 import com.wadim.trick.gmail.com.androideducationapp.presenters.ContactDetailsPresenter
 import com.wadim.trick.gmail.com.androideducationapp.views.ContactDetailsView
 import moxy.MvpAppCompatFragment
@@ -37,6 +38,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_de
         setContactPhoto(contact.imageURI)
         setContactBirthdayInfo(contact.birthday)
         setContactTextInfo(contact)
+        setShowMapButtonClickListener()
     }
 
     private fun setNotifySwitchClickListener(contact: ContactFullInfo) {
@@ -74,6 +76,10 @@ class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_de
         ).show()
     }
 
+    override fun showMap(contactId: String) {
+        (requireActivity() as ClickableContactListElement).showMap(contactId)
+    }
+
     private fun setContactPhoto(photoUri: Uri) {
         val contactPhoto: ImageView? = view?.findViewById(R.id.contactDetailsPhotoImage)
         if (photoUri != Uri.EMPTY)
@@ -106,5 +112,12 @@ class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_de
 
         val description: TextView? = view?.findViewById(R.id.contactDetailsDescriptionTV)
         description?.text = contact.description
+    }
+
+    private fun setShowMapButtonClickListener() {
+        val button = view?.findViewById(R.id.buttonShowMap) as Button
+        button?.setOnClickListener {
+            contactDetailsPresenter.onShowMapButtonClick()
+        }
     }
 }

@@ -3,6 +3,7 @@
     package="com.wadim.trick.gmail.com.androideducationapp">
 
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,18 +11,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidEducationApp">
-        <activity
-            android:name=".MainActivity">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".services.ContactService"/>
-        <receiver
-            android:name=".receivers.ContactBirthdayNotifyReceiver">
+
+        <receiver android:name=".receivers.ContactBirthdayNotifyReceiver">
             <intent-filter>
-                <action android:name="contact.action.birthdayNotify"/>
+                <action android:name="contact.action.birthdayNotify" />
             </intent-filter>
         </receiver>
     </application>

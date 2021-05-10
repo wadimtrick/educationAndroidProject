@@ -1,5 +1,6 @@
 package com.wadim.trick.gmail.com.androideducationapp.views
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.wadim.trick.gmail.com.androideducationapp.models.ContactFullInfo
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
@@ -15,4 +16,6 @@ interface ContactDetailsView: MvpView {
     fun setProgressBarVisible(isVisible: Boolean)
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showToast(text: String)
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun showMap(contactId: String)
 }

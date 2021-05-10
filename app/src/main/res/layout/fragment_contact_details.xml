@@ -116,7 +116,9 @@
         android:text="Уведомлять о ДР"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/contactDetailsNameTV"
-        app:layout_constraintTop_toBottomOf="@+id/contactDetailsNameTV" />
+        app:layout_constraintTop_toBottomOf="@+id/contactDetailsNameTV"
+        tools:visibility="visible"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <TextView
         android:id="@+id/contactDetailsBirthdayTV"
@@ -130,5 +132,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contactDetailsPhone1TV"
         app:layout_constraintWidth_default="spread" />
+
+    <Button
+        android:id="@+id/buttonShowMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show map"
+        app:layout_constraintStart_toStartOf="@id/contactDetailsDescriptionTV"
+        app:layout_constraintTop_toBottomOf="@id/contactDetailsDescriptionTV"
+        android:layout_marginTop="16dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
