@@ -74,4 +74,8 @@ class ContactDetailsPresenter(private val context: Context, private val contactI
             )
         }
     }
+
+    fun onShowMapButtonClick() {
+        viewState.showMap(contactId)
+    }
 }

@@ -13,4 +13,5 @@ interface MainView: MvpView {
     fun showContactListFragment()
     fun showContactDetailsFragment(contactId: String)
     fun showPermissionWarningFragment()
+    fun showMapFragment(contactId: String)
 }

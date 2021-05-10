@@ -2,10 +2,7 @@ package com.wadim.trick.gmail.com.androideducationapp
 
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
-import com.wadim.trick.gmail.com.androideducationapp.fragments.ContactDetailsFragment
-import com.wadim.trick.gmail.com.androideducationapp.fragments.ContactListFragment
-import com.wadim.trick.gmail.com.androideducationapp.fragments.PERMISSION_REQUEST_CODE
-import com.wadim.trick.gmail.com.androideducationapp.fragments.PermissionWarningFragment
+import com.wadim.trick.gmail.com.androideducationapp.fragments.*
 import com.wadim.trick.gmail.com.androideducationapp.interfaces.ClickableContactListElement
 import com.wadim.trick.gmail.com.androideducationapp.presenters.MainPresenter
 import com.wadim.trick.gmail.com.androideducationapp.views.MainView
@@ -43,6 +40,10 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main),
         mainPresenter.setContactDetailsContent(contactID)
     }
 
+    override fun showMap(contactID: String) {
+        mainPresenter.setMapContent(contactID)
+    }
+
     override fun showContactDetailsFragment(contactId: String) {
         val fragment = ContactDetailsFragment.newInstance(contactId)
         supportFragmentManager.beginTransaction()
@@ -63,5 +64,13 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main),
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit()
+    }
+
+    override fun showMapFragment(contactId: String) {
+        val fragment = MapFragment.newInstance(contactId)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack("mapFragment")
+            .commit()
     }
 }

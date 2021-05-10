@@ -36,4 +36,8 @@ class MainPresenter(private val context: Context) : MvpPresenter<MainView>() {
     fun setContactDetailsContent(contactId: String) {
         viewState.showContactDetailsFragment(contactId)
     }
+
+    fun setMapContent(contactId: String) {
+        viewState?.showMapFragment(contactId)
+    }
 }

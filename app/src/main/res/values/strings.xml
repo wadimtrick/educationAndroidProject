@@ -13,4 +13,5 @@
     <string name="contact_details_load_error">Возникла ошибка при загрузке деталей контакта.</string>
     <string name="contact_list_load_error">Возникла ошибка при загрузке списка контактов.</string>
     <string name="error">Ошибка</string>
+    <string name="map_title">Местоположение контакта</string>
 </resources>
