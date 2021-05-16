@@ -12,31 +12,44 @@ import com.wadim.trick.gmail.com.androideducationapp.views.MainView
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import javax.inject.Inject
 
 class MainActivity : MvpAppCompatActivity(R.layout.activity_main),
-        ClickableContactListElement, MainView {
+    ClickableContactListElement, MainView {
+    @Inject
     @InjectPresenter
     lateinit var mainPresenter: MainPresenter
 
     @ProvidePresenter
-    fun providePresenter(): MainPresenter = MainPresenter(applicationContext)
+    fun providePresenter() = mainPresenter
 
     private var isSavedInstanceEmpty = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as AppDelegate)
+            .appComponent
+            .inject(this)
+
         super.onCreate(savedInstanceState)
+
         isSavedInstanceEmpty = savedInstanceState == null
-        mainPresenter.requestPermissions(intent.getStringExtra(CONTACT_ID_KEY), isSavedInstanceEmpty)
+        mainPresenter.requestPermissions(
+            intent.getStringExtra(CONTACT_ID_KEY),
+            isSavedInstanceEmpty
+        )
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if ((requestCode == PERMISSION_REQUEST_CODE) && (!grantResults.contains(PERMISSION_DENIED)))
-            mainPresenter.setMainContent(intent.getStringExtra(CONTACT_ID_KEY), isSavedInstanceEmpty)
+            mainPresenter.setMainContent(
+                intent.getStringExtra(CONTACT_ID_KEY),
+                isSavedInstanceEmpty
+            )
     }
 
     override fun showContactDetails(contactID: String) {
@@ -45,23 +58,24 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main),
 
     override fun showContactDetailsFragment(contactId: String) {
         val fragment = ContactDetailsFragment.newInstance(contactId)
+
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack("contactDetails")
-                .commit()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack("contactDetails")
+            .commit()
     }
 
     override fun showContactListFragment() {
         val fragment = ContactListFragment.newInstance()
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 
     override fun showPermissionWarningFragment() {
         val fragment = PermissionWarningFragment.newInstance()
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 }

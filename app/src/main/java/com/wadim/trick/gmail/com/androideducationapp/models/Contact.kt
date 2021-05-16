@@ -1,7 +1,7 @@
 package com.wadim.trick.gmail.com.androideducationapp.models
 
 import android.net.Uri
-import java.util.*
+import java.util.Calendar
 
 data class ContactShortInfo(val id: String, val name: String, val phone: String, val imageURI: Uri)
 

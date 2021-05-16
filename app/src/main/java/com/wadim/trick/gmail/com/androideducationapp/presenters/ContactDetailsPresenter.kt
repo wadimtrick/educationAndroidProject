@@ -1,24 +1,28 @@
 package com.wadim.trick.gmail.com.androideducationapp.presenters
 
-import android.content.Context
-import com.wadim.trick.gmail.com.androideducationapp.ContactBirthdayNotificationManager
-import com.wadim.trick.gmail.com.androideducationapp.R
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.IBirthdayNotificationManager
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.IContactsSourse
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.IStringManager
 import com.wadim.trick.gmail.com.androideducationapp.models.ContactBirthdayInfo
 import com.wadim.trick.gmail.com.androideducationapp.models.ContactFullInfo
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactsSource
 import com.wadim.trick.gmail.com.androideducationapp.views.ContactDetailsView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import moxy.InjectViewState
 import moxy.MvpPresenter
+import javax.inject.Inject
 
 @InjectViewState
-class ContactDetailsPresenter(private val context: Context, private val contactId: String) :
+class ContactDetailsPresenter @Inject constructor(
+    private val contactId: String,
+    private val stringManager: IStringManager,
+    private val contactBirthdayNotificationManager: IBirthdayNotificationManager,
+    private val contactsSource: IContactsSourse
+) :
     MvpPresenter<ContactDetailsView>() {
     private var isFirstAttach = true
     private var contactBirthdayInfo: ContactBirthdayInfo? = null
-    private var contactBirthdayNotificationManager = ContactBirthdayNotificationManager()
     private var disposable: Disposable? = null
 
     override fun attachView(view: ContactDetailsView?) {
@@ -37,7 +41,7 @@ class ContactDetailsPresenter(private val context: Context, private val contactI
     }
 
     private fun setContactDetailsContent() {
-        disposable = ContactsSource(context).getContactDetails(contactId)
+        disposable = contactsSource.getContactDetails(contactId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState.setProgressBarVisible(true) }
@@ -49,17 +53,15 @@ class ContactDetailsPresenter(private val context: Context, private val contactI
                     setSwitchChecked(it)
                 },
                 {
-                    viewState.showToast(it.message ?: context.resources.getString(R.string.error))
+                    viewState.showToast(it.message ?: stringManager.getErrorText())
                 }
             )
-
     }
 
     private fun setSwitchChecked(contactFullInfo: ContactFullInfo) {
         val contactBirthdayInfo = ContactBirthdayInfo(contactFullInfo)
         viewState.setSwitchChecked(
             contactBirthdayNotificationManager.isBirthdayNotificationPendingIntentExist(
-                context,
                 contactBirthdayInfo
             )
         )
@@ -68,7 +70,6 @@ class ContactDetailsPresenter(private val context: Context, private val contactI
     fun onSwitchChanged(isChecked: Boolean) {
         contactBirthdayInfo?.let {
             contactBirthdayNotificationManager.switchAlarmBithdayNotification(
-                context,
                 isChecked,
                 it
             )

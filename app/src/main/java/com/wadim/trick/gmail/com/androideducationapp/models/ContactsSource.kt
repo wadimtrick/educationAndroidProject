@@ -5,13 +5,15 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract
 import com.wadim.trick.gmail.com.androideducationapp.R
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.IContactsSourse
 import io.reactivex.rxjava3.core.Single
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
 
-class ContactsSource(private val context: Context) {
-    fun getContactList(contactName: String): Single<List<ContactShortInfo>> {
+class ContactsSource @Inject constructor(private val context: Context) : IContactsSourse {
+    override fun getContactList(contactName: String): Single<List<ContactShortInfo>> {
         return Single.create {
             val contactList = mutableListOf<ContactShortInfo>()
             val cursor = getContacts(contactName)
@@ -54,7 +56,7 @@ class ContactsSource(private val context: Context) {
         }
     }
 
-    fun getContactDetails(contactID: String): Single<ContactFullInfo> {
+    override fun getContactDetails(contactID: String): Single<ContactFullInfo> {
         return Single.create {
             var contact: ContactFullInfo? = null
             try {
@@ -136,7 +138,7 @@ class ContactsSource(private val context: Context) {
         contactID: String,
         mime: String
     ): List<String> {
-        var values = mutableListOf<String>()
+        val values = mutableListOf<String>()
         val cursor = getContactData(contactID, mime)
         var i = 0
         cursor.use { cursor ->
@@ -155,7 +157,7 @@ class ContactsSource(private val context: Context) {
 
     private fun getContactMainDataByRawId(contactID: String, field: String): String {
         var fieldValue = ""
-        var cursor: Cursor?
+        val cursor: Cursor?
         try {
             cursor = context.contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -169,7 +171,7 @@ class ContactsSource(private val context: Context) {
         }
         cursor.use {
             cursor?.moveToFirst()
-            fieldValue = cursor?.getString(cursor?.getColumnIndex(field)) ?: ""
+            fieldValue = cursor?.getString(cursor.getColumnIndex(field)) ?: ""
         }
         return fieldValue
     }

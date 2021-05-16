@@ -1,8 +1,7 @@
 package com.wadim.trick.gmail.com.androideducationapp.presenters
 
-import android.content.Context
-import com.wadim.trick.gmail.com.androideducationapp.R
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactsSource
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.IContactsSourse
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.IStringManager
 import com.wadim.trick.gmail.com.androideducationapp.views.ContactListView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -13,13 +12,16 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @InjectViewState
-class ContactListPresenter(private val context: Context) : MvpPresenter<ContactListView>() {
+class ContactListPresenter @Inject constructor(
+    private val stringManager: IStringManager,
+    private val contactsSource: IContactsSourse
+) : MvpPresenter<ContactListView>() {
     private var isFirstAttach = true
     private var contactsDisposable: Disposable? = null
     private var compositeDisposable: CompositeDisposable? = null
-    private var contactsSource = ContactsSource(context)
     private var observableEmitter: ObservableEmitter<String>? = null
 
     override fun attachView(view: ContactListView?) {
@@ -50,7 +52,7 @@ class ContactListPresenter(private val context: Context) : MvpPresenter<ContactL
                     viewState.showContactList(it)
                 },
                 {
-                    viewState.showToast(it.message ?: context.resources.getString(R.string.error))
+                    viewState.showToast(it.message ?: stringManager.getErrorText())
                 }
             )
         compositeDisposable?.add(contactsDisposable)
