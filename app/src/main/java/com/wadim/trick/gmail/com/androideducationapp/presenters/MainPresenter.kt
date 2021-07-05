@@ -1,25 +1,26 @@
 package com.wadim.trick.gmail.com.androideducationapp.presenters
 
 import android.Manifest.permission.READ_CONTACTS
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.M
-import android.util.Log
-import com.wadim.trick.gmail.com.androideducationapp.repositories.ConfigRepository
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.IConfigRepository
 import com.wadim.trick.gmail.com.androideducationapp.views.MainView
 import moxy.InjectViewState
 import moxy.MvpPresenter
+import javax.inject.Inject
 
 @InjectViewState
-class MainPresenter(private val context: Context) : MvpPresenter<MainView>() {
+class MainPresenter @Inject constructor(private val configRepository: IConfigRepository) :
+    MvpPresenter<MainView>() {
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        ConfigRepository().createBirthdayNotificationChannel(context)
+        configRepository.createBirthdayNotificationChannel()
     }
 
     fun requestPermissions(contactId: String?, isSavedInstanceEmpty: Boolean) {
-        when (SDK_INT >= M && context.checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+        when (SDK_INT >= M && configRepository.checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
             true -> viewState.showPermissionWarningFragment()
             false -> setMainContent(contactId, isSavedInstanceEmpty)
         }

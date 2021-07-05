@@ -1,7 +1,7 @@
 package com.wadim.trick.gmail.com.androideducationapp.fragments
 
+import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.SearchView
@@ -9,35 +9,40 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactShortInfo
+import com.wadim.trick.gmail.com.androideducationapp.AppDelegate
 import com.wadim.trick.gmail.com.androideducationapp.R
 import com.wadim.trick.gmail.com.androideducationapp.interfaces.ClickableContactListElement
+import com.wadim.trick.gmail.com.androideducationapp.models.ContactShortInfo
 import com.wadim.trick.gmail.com.androideducationapp.presenters.ContactListPresenter
 import com.wadim.trick.gmail.com.androideducationapp.recycler.ContactAdapter
 import com.wadim.trick.gmail.com.androideducationapp.recycler.ContactItemDecoration
 import com.wadim.trick.gmail.com.androideducationapp.repositories.toDp
 import com.wadim.trick.gmail.com.androideducationapp.views.ContactListView
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.Disposable
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class ContactListFragment : MvpAppCompatFragment(R.layout.fragment_contact_list_element),
     ContactListView {
     private var contactAdapter: ContactAdapter? = null
 
+    @Inject
     @InjectPresenter
     lateinit var contactListPresenter: ContactListPresenter
 
     @ProvidePresenter
-    fun providePresenter(): ContactListPresenter =
-        ContactListPresenter(requireActivity().applicationContext)
+    fun providePresenter() = contactListPresenter
 
     companion object {
         fun newInstance() = ContactListFragment()
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        (requireActivity().application as AppDelegate)
+            .appComponent
+            .inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

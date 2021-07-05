@@ -4,9 +4,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.wadim.trick.gmail.com.androideducationapp.interfaces.IBirthdayNotificationManager
 import com.wadim.trick.gmail.com.androideducationapp.models.ContactBirthdayInfo
 import com.wadim.trick.gmail.com.androideducationapp.receivers.ContactBirthdayNotifyReceiver
-import java.util.*
+import java.util.Calendar
+import javax.inject.Inject
 
 const val CONTACT_ID_KEY = "CONTACT_ID"
 const val CONTACT_BIRTHDAY_KEY = "CONTACT_BIRTHDAY"
@@ -14,9 +16,9 @@ const val CONTACT_NAME_KEY = "CONTACT_NAME_KEY"
 const val NOTIFICATION_CHANNEL_ID = "contactBirthdayChannel"
 const val NOTIFICATION_CHANNEL_NAME = "Birthday notification channel"
 
-class ContactBirthdayNotificationManager() {
-    fun switchAlarmBithdayNotification(
-        context: Context,
+class ContactBirthdayNotificationManager @Inject constructor(private val context: Context) :
+    IBirthdayNotificationManager {
+    override fun switchAlarmBithdayNotification(
         isNotificationEnabled: Boolean,
         contact: ContactBirthdayInfo
     ) {
@@ -24,8 +26,8 @@ class ContactBirthdayNotificationManager() {
             return
 
         val alarmManager =
-            context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val notificationPendingIntent = getBirthdayNotificationPendingIntent(context, contact)
+            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val notificationPendingIntent = getBirthdayNotificationPendingIntent(contact)
 
         if (isNotificationEnabled) {
             alarmManager.set(
@@ -39,26 +41,26 @@ class ContactBirthdayNotificationManager() {
         }
     }
 
-    fun isBirthdayNotificationPendingIntentExist(context: Context, contact: ContactBirthdayInfo): Boolean {
+    override fun isBirthdayNotificationPendingIntentExist(contact: ContactBirthdayInfo): Boolean {
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             contact.id.hashCode(),
-            getBirthdayNotificationIntent(context, contact),
+            getBirthdayNotificationIntent(contact),
             PendingIntent.FLAG_NO_CREATE
         )
         return pendingIntent != null
     }
 
-    private fun getBirthdayNotificationPendingIntent(context: Context, contact: ContactBirthdayInfo): PendingIntent {
+    private fun getBirthdayNotificationPendingIntent(contact: ContactBirthdayInfo): PendingIntent {
         return PendingIntent.getBroadcast(
             context,
             contact.id.hashCode(),
-            getBirthdayNotificationIntent(context, contact),
+            getBirthdayNotificationIntent(contact),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 
-    private fun getBirthdayNotificationIntent(context: Context, contact: ContactBirthdayInfo): Intent {
+    private fun getBirthdayNotificationIntent(contact: ContactBirthdayInfo): Intent {
         with(contact) {
             return Intent(context, ContactBirthdayNotifyReceiver::class.java)
                 .putExtra(CONTACT_ID_KEY, id)

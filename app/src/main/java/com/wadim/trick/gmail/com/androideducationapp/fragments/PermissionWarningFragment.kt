@@ -14,7 +14,8 @@ import moxy.presenter.ProvidePresenter
 
 const val PERMISSION_REQUEST_CODE = 1231
 
-class PermissionWarningFragment : MvpAppCompatFragment(R.layout.fragment_permission_warning), PermissionWarningView {
+class PermissionWarningFragment : MvpAppCompatFragment(R.layout.fragment_permission_warning),
+    PermissionWarningView {
     @InjectPresenter
     lateinit var permissionWarningPresenter: PermissionWarningPresenter
 
@@ -45,6 +46,9 @@ class PermissionWarningFragment : MvpAppCompatFragment(R.layout.fragment_permiss
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onButtonClick() {
-        requireActivity().requestPermissions(arrayOf(android.Manifest.permission.READ_CONTACTS), PERMISSION_REQUEST_CODE)
+        requireActivity().requestPermissions(
+            arrayOf(android.Manifest.permission.READ_CONTACTS),
+            PERMISSION_REQUEST_CODE
+        )
     }
 }

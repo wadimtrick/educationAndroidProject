@@ -1,35 +1,53 @@
 package com.wadim.trick.gmail.com.androideducationapp.fragments
 
+import android.app.Activity
 import android.net.Uri
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.Switch
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactFullInfo
+import com.wadim.trick.gmail.com.androideducationapp.AppDelegate
 import com.wadim.trick.gmail.com.androideducationapp.R
+import com.wadim.trick.gmail.com.androideducationapp.models.ContactFullInfo
 import com.wadim.trick.gmail.com.androideducationapp.presenters.ContactDetailsPresenter
 import com.wadim.trick.gmail.com.androideducationapp.views.ContactDetailsView
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import javax.inject.Inject
 
 const val CONTACT_DETAILS_ARGUMENT_KEY = "CONTACT_DETAILS_ARGUMENT_KEY"
 
-class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_details), ContactDetailsView {
+class ContactDetailsFragment() : MvpAppCompatFragment(R.layout.fragment_contact_details),
+    ContactDetailsView {
+
+    @Inject
     @InjectPresenter
     lateinit var contactDetailsPresenter: ContactDetailsPresenter
 
     @ProvidePresenter
-    fun providePresenter(): ContactDetailsPresenter {
-        val contactID = arguments?.getString(CONTACT_DETAILS_ARGUMENT_KEY) ?: ""
-        return ContactDetailsPresenter(requireActivity().applicationContext, contactID)
-    }
+    fun providePresenter(): ContactDetailsPresenter = contactDetailsPresenter
 
     companion object {
         fun newInstance(contactID: String) = ContactDetailsFragment().apply {
             arguments = bundleOf(CONTACT_DETAILS_ARGUMENT_KEY to contactID)
         }
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        (requireActivity().application as AppDelegate)
+            .appComponent
+            .plusContactDetailsComponent()
+            .contactID(arguments?.getString(CONTACT_DETAILS_ARGUMENT_KEY) ?: "")
+            .build()
+            .inject(this)
     }
 
     override fun showContactDetails(contact: ContactFullInfo) {
@@ -44,7 +62,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_de
             return
         val switch: Switch? = view?.findViewById(R.id.contactDetailsBirthdayNotifySwitch)
         switch?.isVisible = true
-        switch?.setOnCheckedChangeListener { buttonView, isChecked ->
+        switch?.setOnCheckedChangeListener { _, isChecked ->
             onSwitchChanged(isChecked)
         }
     }
@@ -85,7 +103,10 @@ class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_de
     private fun setContactBirthdayInfo(contactBirthday: Calendar?) {
         val contactBirthdayTV: TextView? = view?.findViewById(R.id.contactDetailsBirthdayTV)
         contactBirthdayTV?.text = if (contactBirthday != null)
-            SimpleDateFormat("d MMMM", Locale.getDefault()).format(contactBirthday.time) else getString(R.string.date_missing)
+            SimpleDateFormat(
+                "d MMMM",
+                Locale.getDefault()
+            ).format(contactBirthday.time) else getString(R.string.date_missing)
     }
 
     private fun setContactTextInfo(contact: ContactFullInfo) {

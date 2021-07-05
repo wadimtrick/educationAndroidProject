@@ -1,6 +1,6 @@
 package com.wadim.trick.gmail.com.androideducationapp.receivers
 
-import android.app.*
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,7 +14,7 @@ import com.wadim.trick.gmail.com.androideducationapp.MainActivity
 import com.wadim.trick.gmail.com.androideducationapp.NOTIFICATION_CHANNEL_ID
 import com.wadim.trick.gmail.com.androideducationapp.R
 import com.wadim.trick.gmail.com.androideducationapp.models.ContactBirthdayInfo
-import java.util.*
+import java.util.Calendar
 
 private const val NOTIFICATION_ID = 101
 
@@ -22,19 +22,18 @@ class ContactBirthdayNotifyReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context == null || intent == null)
             return
-        val contactID = intent?.getStringExtra(CONTACT_ID_KEY) ?: ""
+        val contactID = intent.getStringExtra(CONTACT_ID_KEY) ?: ""
         val contactBirthday = Calendar.getInstance()
-        contactBirthday.timeInMillis = intent?.getLongExtra(CONTACT_BIRTHDAY_KEY, 0)
-        val contactName = intent?.getStringExtra(CONTACT_NAME_KEY) ?: "Ошибка"
+        contactBirthday.timeInMillis = intent.getLongExtra(CONTACT_BIRTHDAY_KEY, 0)
+        val contactName = intent.getStringExtra(CONTACT_NAME_KEY) ?: "Ошибка"
         if (contactName == "Ошибка")
             return
 
         createNotification(context, contactID, contactName)
         val contactBirthdayInfo =
                 ContactBirthdayInfo(contactID, contactName, contactBirthday)
-        val contactBirthdayNotification = ContactBirthdayNotificationManager()
+        val contactBirthdayNotification = ContactBirthdayNotificationManager(context)
         contactBirthdayNotification.switchAlarmBithdayNotification(
-                context,
                 true,
                 contactBirthdayInfo
         )
