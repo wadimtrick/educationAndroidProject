@@ -1,10 +1,10 @@
 package com.wadim.trick.gmail.com.androideducationapp.presenters
 
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IBirthdayNotificationManager
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IContactsSourse
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IStringManager
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactBirthdayInfo
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactFullInfo
+import com.example.coremodule.data.IBirthdayNotificationManager
+import com.example.coremodule.data.IContactsSource
+import com.example.coremodule.data.IStringManager
+import com.example.coremodule.domain.ContactBirthdayInfo
+import com.example.coremodule.domain.ContactFullInfo
 import com.wadim.trick.gmail.com.androideducationapp.views.ContactDetailsView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
@@ -18,7 +18,7 @@ class ContactDetailsPresenter @Inject constructor(
     private val contactId: String,
     private val stringManager: IStringManager,
     private val contactBirthdayNotificationManager: IBirthdayNotificationManager,
-    private val contactsSource: IContactsSourse
+    private val contactsSource: IContactsSource
 ) :
     MvpPresenter<ContactDetailsView>() {
     private var isFirstAttach = true

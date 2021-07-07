@@ -4,8 +4,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IBirthdayNotificationManager
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactBirthdayInfo
+import com.example.coremodule.data.IBirthdayNotificationManager
+import com.example.coremodule.domain.ContactBirthdayInfo
 import com.wadim.trick.gmail.com.androideducationapp.receivers.ContactBirthdayNotifyReceiver
 import java.util.Calendar
 import javax.inject.Inject
@@ -22,8 +22,7 @@ class ContactBirthdayNotificationManager @Inject constructor(private val context
         isNotificationEnabled: Boolean,
         contact: ContactBirthdayInfo
     ) {
-        if (contact.birthday == null)
-            return
+        val birthday = contact.birthday ?: return
 
         val alarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -32,7 +31,7 @@ class ContactBirthdayNotificationManager @Inject constructor(private val context
         if (isNotificationEnabled) {
             alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
-                getAlarmTime(contact.birthday),
+                getAlarmTime(birthday),
                 notificationPendingIntent
             )
         } else {

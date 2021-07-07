@@ -9,10 +9,10 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.coremodule.domain.ContactShortInfo
 import com.wadim.trick.gmail.com.androideducationapp.AppDelegate
 import com.wadim.trick.gmail.com.androideducationapp.R
 import com.wadim.trick.gmail.com.androideducationapp.interfaces.ClickableContactListElement
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactShortInfo
 import com.wadim.trick.gmail.com.androideducationapp.presenters.ContactListPresenter
 import com.wadim.trick.gmail.com.androideducationapp.recycler.ContactAdapter
 import com.wadim.trick.gmail.com.androideducationapp.recycler.ContactItemDecoration

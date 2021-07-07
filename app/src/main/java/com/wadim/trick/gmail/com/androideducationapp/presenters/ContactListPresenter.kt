@@ -1,7 +1,7 @@
 package com.wadim.trick.gmail.com.androideducationapp.presenters
 
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IContactsSourse
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IStringManager
+import com.example.coremodule.data.IContactsSource
+import com.example.coremodule.data.IStringManager
 import com.wadim.trick.gmail.com.androideducationapp.views.ContactListView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @InjectViewState
 class ContactListPresenter @Inject constructor(
     private val stringManager: IStringManager,
-    private val contactsSource: IContactsSourse
+    private val contactsSource: IContactsSource
 ) : MvpPresenter<ContactListView>() {
     private var isFirstAttach = true
     private var contactsDisposable: Disposable? = null

@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.coremodule.domain.ContactShortInfo
 import com.wadim.trick.gmail.com.androideducationapp.R
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactShortInfo
 
 class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var phoneTextView: TextView? = null
@@ -15,7 +15,7 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var contactId: String = ""
 
     init {
-        with(itemView){
+        with(itemView) {
             phoneTextView = findViewById(R.id.contactPhoneTV)
             photoImageView = findViewById(R.id.contactPhotoImage)
             nameTextView = findViewById(R.id.contactNameTV)
