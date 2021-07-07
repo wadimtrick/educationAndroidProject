@@ -1,19 +1,20 @@
-package com.wadim.trick.gmail.com.androideducationapp.views
+package com.example.contactdetailsmodule.presentation
 
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactShortInfo
+import com.example.coremodule.domain.ContactFullInfo
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface ContactListView : MvpView {
+interface ContactDetailsView : MvpView {
+    fun showContactDetails(contact: ContactFullInfo)
     fun setToolbarTitle()
-    fun showContactList(contactShortInfoList: List<ContactShortInfo>)
-    @StateStrategyType(OneExecutionStateStrategy::class)
-    fun onClickShowDetails(contactId: String)
+    fun setSwitchChecked(isChecked: Boolean)
+
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun setProgressBarVisible(isVisible: Boolean)
+
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showToast(text: String)
 }

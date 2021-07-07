@@ -9,11 +9,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import com.example.contactdetailsmodule.presentation.ContactDetailsPresenter
+import com.example.contactdetailsmodule.presentation.ContactDetailsView
+import com.example.coremodule.domain.ContactFullInfo
 import com.wadim.trick.gmail.com.androideducationapp.AppDelegate
 import com.wadim.trick.gmail.com.androideducationapp.R
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactFullInfo
-import com.wadim.trick.gmail.com.androideducationapp.presenters.ContactDetailsPresenter
-import com.wadim.trick.gmail.com.androideducationapp.views.ContactDetailsView
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 const val CONTACT_DETAILS_ARGUMENT_KEY = "CONTACT_DETAILS_ARGUMENT_KEY"
 
-class ContactDetailsFragment() : MvpAppCompatFragment(R.layout.fragment_contact_details),
+class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_details),
     ContactDetailsView {
 
     @Inject

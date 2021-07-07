@@ -2,7 +2,6 @@ package com.wadim.trick.gmail.com.androideducationapp
 
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
-import android.util.Log
 import com.wadim.trick.gmail.com.androideducationapp.fragments.ContactDetailsFragment
 import com.wadim.trick.gmail.com.androideducationapp.fragments.ContactListFragment
 import com.wadim.trick.gmail.com.androideducationapp.fragments.PERMISSION_REQUEST_CODE
@@ -30,7 +29,6 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main),
         (application as AppDelegate)
             .appComponent
             .inject(this)
-        Log.e("testLog", "test")
         super.onCreate(savedInstanceState)
 
         isSavedInstanceEmpty = savedInstanceState == null

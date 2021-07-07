@@ -1,6 +1,4 @@
-package com.wadim.trick.gmail.com.androideducationapp.interfaces
-
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactBirthdayInfo
+package com.example.coremodule.domain
 
 interface IBirthdayNotificationManager {
     fun isBirthdayNotificationPendingIntentExist(contact: ContactBirthdayInfo): Boolean

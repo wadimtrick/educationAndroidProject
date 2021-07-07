@@ -27,3 +27,8 @@ android {
         jvmTarget = '1.8'
     }
 }
+
+dependencies {
+    implementation "io.reactivex.rxjava3:rxjava:3.0.13-RC2"
+    implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
+}

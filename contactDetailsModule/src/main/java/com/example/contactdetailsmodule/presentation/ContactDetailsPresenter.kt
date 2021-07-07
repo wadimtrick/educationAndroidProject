@@ -1,11 +1,8 @@
-package com.wadim.trick.gmail.com.androideducationapp.presenters
+package com.example.contactdetailsmodule.presentation
 
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IBirthdayNotificationManager
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IContactsSourse
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IStringManager
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactBirthdayInfo
-import com.wadim.trick.gmail.com.androideducationapp.models.ContactFullInfo
-import com.wadim.trick.gmail.com.androideducationapp.views.ContactDetailsView
+import com.example.contactdetailsmodule.domain.ContactDetailsInteractor
+import com.example.coremodule.domain.ContactBirthdayInfo
+import com.example.coremodule.domain.ContactFullInfo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -16,9 +13,7 @@ import javax.inject.Inject
 @InjectViewState
 class ContactDetailsPresenter @Inject constructor(
     private val contactId: String,
-    private val stringManager: IStringManager,
-    private val contactBirthdayNotificationManager: IBirthdayNotificationManager,
-    private val contactsSource: IContactsSourse
+    private val contactDetailsInteractor: ContactDetailsInteractor
 ) :
     MvpPresenter<ContactDetailsView>() {
     private var isFirstAttach = true
@@ -41,7 +36,7 @@ class ContactDetailsPresenter @Inject constructor(
     }
 
     private fun setContactDetailsContent() {
-        disposable = contactsSource.getContactDetails(contactId)
+        disposable = contactDetailsInteractor.getContactDetails(contactId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState.setProgressBarVisible(true) }
@@ -53,7 +48,7 @@ class ContactDetailsPresenter @Inject constructor(
                     setSwitchChecked(it)
                 },
                 {
-                    viewState.showToast(it.message ?: stringManager.getErrorText())
+                    viewState.showToast(it.message ?: contactDetailsInteractor.getErrorText())
                 }
             )
     }
@@ -61,7 +56,7 @@ class ContactDetailsPresenter @Inject constructor(
     private fun setSwitchChecked(contactFullInfo: ContactFullInfo) {
         val contactBirthdayInfo = ContactBirthdayInfo(contactFullInfo)
         viewState.setSwitchChecked(
-            contactBirthdayNotificationManager.isBirthdayNotificationPendingIntentExist(
+            contactDetailsInteractor.isBirthdayNotificationPendingIntentExist(
                 contactBirthdayInfo
             )
         )
@@ -69,7 +64,7 @@ class ContactDetailsPresenter @Inject constructor(
 
     fun onSwitchChanged(isChecked: Boolean) {
         contactBirthdayInfo?.let {
-            contactBirthdayNotificationManager.switchAlarmBithdayNotification(
+            contactDetailsInteractor.switchAlarmBirthdayNotification(
                 isChecked,
                 it
             )

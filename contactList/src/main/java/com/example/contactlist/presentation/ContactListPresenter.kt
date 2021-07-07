@@ -1,8 +1,6 @@
-package com.wadim.trick.gmail.com.androideducationapp.presenters
+package com.example.contactlist.presentation
 
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IContactsSourse
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IStringManager
-import com.wadim.trick.gmail.com.androideducationapp.views.ContactListView
+import com.example.contactlist.domain.ContactListInteractor
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.ObservableEmitter
@@ -16,8 +14,7 @@ import javax.inject.Inject
 
 @InjectViewState
 class ContactListPresenter @Inject constructor(
-    private val stringManager: IStringManager,
-    private val contactsSource: IContactsSourse
+    private val contactListInteractor: ContactListInteractor
 ) : MvpPresenter<ContactListView>() {
     private var isFirstAttach = true
     private var contactsDisposable: Disposable? = null
@@ -42,7 +39,7 @@ class ContactListPresenter @Inject constructor(
     private fun getContactList(contactName: String) {
         if (contactsDisposable != null)
             compositeDisposable?.remove(contactsDisposable)
-        contactsDisposable = contactsSource.getContactList(contactName)
+        contactsDisposable = contactListInteractor.getContactList(contactName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState.setProgressBarVisible(true) }
@@ -52,7 +49,7 @@ class ContactListPresenter @Inject constructor(
                     viewState.showContactList(it)
                 },
                 {
-                    viewState.showToast(it.message ?: stringManager.getErrorText())
+                    viewState.showToast(it.message ?: contactListInteractor.getErrorText())
                 }
             )
         compositeDisposable?.add(contactsDisposable)
