@@ -1,2 +1,5 @@
 include ':app'
 rootProject.name = "Android Education App"
+include ':contactDetailsModule'
+include ':coreModule'
+include ':contactList'

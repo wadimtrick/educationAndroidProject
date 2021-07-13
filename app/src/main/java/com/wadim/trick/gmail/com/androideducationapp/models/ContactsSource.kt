@@ -4,15 +4,18 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract
+import com.example.coremodule.domain.ContactFullInfo
+import com.example.coremodule.domain.ContactShortInfo
+import com.example.coremodule.domain.IContactsSource
 import com.wadim.trick.gmail.com.androideducationapp.R
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.IContactsSourse
 import io.reactivex.rxjava3.core.Single
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
-class ContactsSource @Inject constructor(private val context: Context) : IContactsSourse {
+class ContactsSource @Inject constructor(private val context: Context) :
+    IContactsSource {
     override fun getContactList(contactName: String): Single<List<ContactShortInfo>> {
         return Single.create {
             val contactList = mutableListOf<ContactShortInfo>()
