@@ -1,4 +1,4 @@
-package com.wadim.trick.gmail.com.androideducationapp.recycler
+package com.example.contactlist.presentation.recycler
 
 import android.graphics.Canvas
 import android.graphics.Rect

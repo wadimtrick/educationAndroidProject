@@ -44,7 +44,6 @@ dependencies {
     implementation "com.github.moxy-community:moxy:2.2.2"
     implementation "com.github.moxy-community:moxy-androidx:2.2.2"
     kapt "com.github.moxy-community:moxy-compiler:2.2.2"
-    implementation "androidx.recyclerview:recyclerview:1.2.0"
     implementation "io.reactivex.rxjava3:rxjava:3.0.13-RC2"
     implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
 
@@ -61,4 +60,8 @@ dependencies {
     implementation project (':coreModule')
     implementation project (':contactDetailsModule')
     implementation project (':contactList')
+}
+
+kapt {
+    correctErrorTypes true
 }

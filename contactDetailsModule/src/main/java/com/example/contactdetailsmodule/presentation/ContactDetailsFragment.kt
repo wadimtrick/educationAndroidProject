@@ -1,4 +1,4 @@
-package com.wadim.trick.gmail.com.androideducationapp.fragments
+package com.example.contactdetailsmodule.presentation
 
 import android.app.Activity
 import android.net.Uri
@@ -9,11 +9,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import com.example.contactdetailsmodule.presentation.ContactDetailsPresenter
-import com.example.contactdetailsmodule.presentation.ContactDetailsView
+import com.example.contactdetailsmodule.R
+import com.example.coremodule.di.IAppDelegate
+import com.example.coremodule.di.IFragmentInjector
 import com.example.coremodule.domain.ContactFullInfo
-import com.wadim.trick.gmail.com.androideducationapp.AppDelegate
-import com.wadim.trick.gmail.com.androideducationapp.R
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -26,7 +25,6 @@ const val CONTACT_DETAILS_ARGUMENT_KEY = "CONTACT_DETAILS_ARGUMENT_KEY"
 
 class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_details),
     ContactDetailsView {
-
     @Inject
     @InjectPresenter
     lateinit var contactDetailsPresenter: ContactDetailsPresenter
@@ -42,12 +40,13 @@ class ContactDetailsFragment : MvpAppCompatFragment(R.layout.fragment_contact_de
 
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
-        (requireActivity().application as AppDelegate)
-            .appComponent
-            .plusContactDetailsComponent()
-            .contactID(arguments?.getString(CONTACT_DETAILS_ARGUMENT_KEY) ?: "")
-            .build()
+
+        ((requireActivity().application as IAppDelegate)
+            .getIAppComponent()
+            .plusContactDetailsComponent() as IFragmentInjector<ContactDetailsFragment>)
             .inject(this)
+
+        contactDetailsPresenter.setContactId(arguments?.getString(CONTACT_DETAILS_ARGUMENT_KEY) ?: "")
     }
 
     override fun showContactDetails(contact: ContactFullInfo) {

@@ -1,4 +1,4 @@
-package com.wadim.trick.gmail.com.androideducationapp.interfaces
+package com.example.coremodule.domain
 
 interface ClickableContactListElement {
     fun showContactDetails(contactID: String)

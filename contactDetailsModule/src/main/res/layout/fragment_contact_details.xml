@@ -8,7 +8,7 @@
     android:background="@drawable/back"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ContactDetailsFragment">
+    tools:context=".presentation.ContactDetailsFragment">
 
     <ImageView
         android:id="@+id/contactDetailsPhotoImage"

@@ -1,10 +1,10 @@
-package com.wadim.trick.gmail.com.androideducationapp.recycler
+package com.example.contactlist.presentation.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import com.example.contactlist.R
 import com.example.coremodule.domain.ContactShortInfo
-import com.wadim.trick.gmail.com.androideducationapp.R
 
 class ContactAdapter(private val elementOnClick: (String) -> Unit) :
     ListAdapter<ContactShortInfo, ContactViewHolder>(ContactDiffItemCallback()) {

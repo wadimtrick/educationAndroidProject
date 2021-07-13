@@ -1,4 +1,4 @@
-package com.wadim.trick.gmail.com.androideducationapp.fragments
+package com.example.contactlist.presentation
 
 import android.app.Activity
 import android.os.Bundle
@@ -9,15 +9,15 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.contactlist.presentation.ContactListPresenter
-import com.example.contactlist.presentation.ContactListView
+import com.example.contactlist.R
+import com.example.contactlist.presentation.recycler.ContactAdapter
+import com.example.contactlist.presentation.recycler.ContactItemDecoration
+import com.example.coremodule.R.drawable.back
+import com.example.coremodule.data.toDp
+import com.example.coremodule.di.IAppDelegate
+import com.example.coremodule.di.IFragmentInjector
+import com.example.coremodule.domain.ClickableContactListElement
 import com.example.coremodule.domain.ContactShortInfo
-import com.wadim.trick.gmail.com.androideducationapp.AppDelegate
-import com.wadim.trick.gmail.com.androideducationapp.R
-import com.wadim.trick.gmail.com.androideducationapp.interfaces.ClickableContactListElement
-import com.wadim.trick.gmail.com.androideducationapp.recycler.ContactAdapter
-import com.wadim.trick.gmail.com.androideducationapp.recycler.ContactItemDecoration
-import com.wadim.trick.gmail.com.androideducationapp.repositories.toDp
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -40,8 +40,9 @@ class ContactListFragment : MvpAppCompatFragment(R.layout.fragment_contact_list_
 
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
-        (requireActivity().application as AppDelegate)
-            .appComponent
+        ((requireActivity().application as IAppDelegate)
+            .getIAppComponent()
+            .plusContactListComponent() as IFragmentInjector<ContactListFragment>)
             .inject(this)
     }
 
@@ -71,7 +72,7 @@ class ContactListFragment : MvpAppCompatFragment(R.layout.fragment_contact_list_
             layoutManager = LinearLayoutManager(context)
             if (adapter == null)
                 adapter = contactAdapter
-            val borderDrawable = resources.getDrawable(R.drawable.back, context?.theme)
+            val borderDrawable = resources.getDrawable(back, context?.theme)
             addItemDecoration(ContactItemDecoration(20.toDp(), borderDrawable))
         }
     }

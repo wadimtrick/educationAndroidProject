@@ -1,6 +1,6 @@
 package com.example.contactdetailsmodule.presentation
 
-import com.example.contactdetailsmodule.domain.ContactDetailsInteractor
+import com.example.contactdetailsmodule.domain.IContactDetailsInteractor
 import com.example.coremodule.domain.ContactBirthdayInfo
 import com.example.coremodule.domain.ContactFullInfo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -12,13 +12,17 @@ import javax.inject.Inject
 
 @InjectViewState
 class ContactDetailsPresenter @Inject constructor(
-    private val contactId: String,
-    private val contactDetailsInteractor: ContactDetailsInteractor
+    private val contactDetailsInteractor: IContactDetailsInteractor
 ) :
     MvpPresenter<ContactDetailsView>() {
     private var isFirstAttach = true
     private var contactBirthdayInfo: ContactBirthdayInfo? = null
     private var disposable: Disposable? = null
+    private var contactId = ""
+
+    fun setContactId(contactId: String) {
+        this.contactId = contactId
+    }
 
     override fun attachView(view: ContactDetailsView?) {
         super.attachView(view)

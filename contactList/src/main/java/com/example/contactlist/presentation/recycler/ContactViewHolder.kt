@@ -1,12 +1,12 @@
-package com.wadim.trick.gmail.com.androideducationapp.recycler
+package com.example.contactlist.presentation.recycler
 
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.contactlist.R
 import com.example.coremodule.domain.ContactShortInfo
-import com.wadim.trick.gmail.com.androideducationapp.R
 
 class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var phoneTextView: TextView? = null
